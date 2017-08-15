@@ -4,6 +4,7 @@ import YTSearch from "youtube-api-search";
 
 import SearchBar from "./components/search_bar";
 import VideoList from "./components/video_list";
+import VideoDetail from "./components/video_detail";
 
 const API_KEY = "AIzaSyC8fYgZ0FsXubMXKfbk-ZRqm4N8-hqm-_8";
 
@@ -11,18 +12,28 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    YTSearch({ key: API_KEY, term: "cats" }, videos => {
-      this.setState({ videos });
-    });
+    this.state = {
+      videos: [],
+      selectedVideo: null
+    };
 
-    this.state = { videos: [] };
+    YTSearch({ key: API_KEY, term: "cats" }, videos => {
+      this.setState({
+        videos,
+        selectedVideo: videos[0]
+      });
+    });
   }
 
   render() {
     return (
       <div>
         <SearchBar />
-        <VideoList videos={this.state.videos} />
+        <VideoDetail video={this.state.selectedVideo} />
+        <VideoList
+          onVideoSelect={selectedVideo => this.setState({ selectedVideo })}
+          video={this.state.videos}
+        />
       </div>
     );
   }
